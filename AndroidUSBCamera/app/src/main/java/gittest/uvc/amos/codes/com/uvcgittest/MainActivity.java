@@ -1,57 +1,35 @@
 package gittest.uvc.amos.codes.com.uvcgittest;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.TextureView;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.amos.codes.uvc.FileUtils;
 import com.amos.codes.uvc.UVCCameraHelper;
 import com.serenegiant.usb.CameraDialog;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.common.AbstractUVCCameraHandler;
-import com.serenegiant.usb.encoder.RecordParams;
 import com.serenegiant.usb.widget.CameraViewInterface;
 import com.serenegiant.usb.widget.UVCCameraTextureView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class MainActivity extends AppCompatActivity implements CameraDialog.CameraDialogParent, CameraViewInterface.Callback{
-    private Button btnPhoto,btnStartRec,btnStopRec,btnRotate,btnStart,btnStop;
-    private  int int_rotation=0;
     private RelativeLayout relativeVideo;
 
     private UVCCameraTextureView uvcCameraTextureView;
     private UVCCameraHelper mCameraHelper;
     private boolean isRequest;
-    private boolean isPreview;
+
+    private int frameCounter;
+    private TextView dataInfo;
 
 
     private UVCCameraHelper.OnMyDevConnectListener listener = new UVCCameraHelper.OnMyDevConnectListener() {
@@ -78,8 +56,9 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
         public void onConnectDev(UsbDevice device, boolean isConnected) {
             if (!isConnected) {
                 showShortMsg("fail to connect,please check resolution params");
-                isPreview = false;
+                //isPreview = false;
             }
+
         }
         @Override
         public void onDisConnectDev(UsbDevice device) {
@@ -98,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN); //全屏
 
-        initButtons();  //初始化按钮事件
+        //initButtons();  //初始化按钮事件
         initTextureViewSurface();  //初始化播放器控件
     }
 
@@ -130,11 +109,15 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
     public void onSurfaceDestroy(CameraViewInterface view, Surface surface) {
     }
 
+    private boolean isUpdated;
+
     /**
      * 初始化播放器的Surface
      * 一个UVC专用的
      */
     public void initTextureViewSurface() {
+        dataInfo = (TextView) findViewById(R.id.data_info);
+
         WindowManager manager = this.getWindowManager();
         DisplayMetrics outMetrics = new DisplayMetrics();
         manager.getDefaultDisplay().getMetrics(outMetrics);
@@ -149,17 +132,31 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
         params.width = 1024;
         relativeVideo.setLayoutParams(params);
 
+        /*
         uvcCameraTextureView = new UVCCameraTextureView(this);
         uvcCameraTextureView.setLayoutParams(params);
+        uvcCameraTextureView.setAlpha(0);
         relativeVideo.addView(uvcCameraTextureView);
+        */
+        uvcCameraTextureView = (UVCCameraTextureView)findViewById(R.id.uvc_texture);
         uvcCameraTextureView.setCallback(this);
+
         mCameraHelper = UVCCameraHelper.getInstance();
         mCameraHelper.setDefaultFrameFormat(UVCCameraHelper.FRAME_FORMAT_MJPEG);
         mCameraHelper.initUSBMonitor(this, uvcCameraTextureView, listener);
         mCameraHelper.setOnPreviewFrameListener(new AbstractUVCCameraHandler.OnPreViewResultListener() {
             @Override
             public void onPreviewResult(byte[] nv21) {
-                showShortMsg("data="+nv21.length);
+                //showShortMsg("data="+nv21.length);
+                frameCounter ++;
+                dataInfo.setText("onPreviewResult()="+nv21.length+", "+frameCounter);
+
+                if (!isUpdated)
+                {
+                    isUpdated = true;
+                    uvcCameraTextureView.setAlpha(1);
+                }
+
             }
         });
 
@@ -169,9 +166,13 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
 
     }
 
-    /**
-     * 按钮事件
-     */
+    /*
+
+    private Button btnPhoto,btnStartRec,btnStopRec,btnRotate,btnStart,btnStop;
+    private  int int_rotation=0;
+    private boolean isPreview;
+
+
     private void initButtons()
     {
         btnPhoto=(Button)findViewById(R.id.btn_TakePhoto);
@@ -217,7 +218,10 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
                         public void onEncodeResult(byte[] data, int offset, int length, long timestamp, int type) {
                             // type = 1,h264 video stream
                             if (type == 1) {
-                                FileUtils.putFileStream(data, offset, length);
+                                //FileUtils.putFileStream(data, offset, length);
+                                //showShortMsg("data="+data.length);
+                                frameCounter ++;
+                                dataInfo.setText("onEncodeResult()="+frameCounter);
                             }
                             // type = 0,aac audio stream
                             if (type == 0) {
@@ -283,4 +287,5 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
             }
         });
     }
+     */
 }

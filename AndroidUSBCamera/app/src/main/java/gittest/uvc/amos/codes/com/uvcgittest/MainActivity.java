@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
     private UVCCameraTextureView uvcCameraTextureView;
     private UVCCameraHelper mCameraHelper;
     private boolean isRequest;
+    private boolean isUpdated;
 
     private int frameCounter;
     private TextView dataInfo;
@@ -109,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
     public void onSurfaceDestroy(CameraViewInterface view, Surface surface) {
     }
 
-    private boolean isUpdated;
-
     /**
      * 初始化播放器的Surface
      * 一个UVC专用的
@@ -149,7 +148,11 @@ public class MainActivity extends AppCompatActivity implements CameraDialog.Came
             public void onPreviewResult(byte[] nv21) {
                 //showShortMsg("data="+nv21.length);
                 frameCounter ++;
-                dataInfo.setText("onPreviewResult()="+nv21.length+", "+frameCounter);
+                //mCameraHelper.updateResolution(width, height);
+                dataInfo.setText("onPreviewResult()="
+                        +"("+mCameraHelper.getPreviewWidth()+", "+mCameraHelper.getPreviewHeight()+")"
+                        +", "+nv21.length
+                        +", "+frameCounter);
 
                 if (!isUpdated)
                 {

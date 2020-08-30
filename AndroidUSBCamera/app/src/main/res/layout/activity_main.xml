@@ -10,4 +10,64 @@
 
         </RelativeLayout>
 
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="26dp"
+            android:layout_marginBottom="42dp"
+            android:text="开始预览" />
+
+        <Button
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="22dp"
+            android:text="停止预览" />
+
+        <Button
+            android:id="@+id/btn_TakePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="100dp"
+            android:text="拍照" />
+
+        <Button
+            android:id="@+id/btn_Rec_Start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/btn_TakePhoto"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="146dp"
+            android:layout_marginTop="2dp"
+            android:text="开始录制" />
+
+        <Button
+            android:id="@+id/btn_Rec_Stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/btn_TakePhoto"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="25dp"
+            android:text="停止录制" />
+
+        <Button
+            android:id="@+id/btn_Rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="33dp"
+            android:text="旋转" />
+
+
     </RelativeLayout>
